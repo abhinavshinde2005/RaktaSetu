@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Requests - RaktaSetu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-white to-pink-50 min-h-screen">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">🩸</span>
+                    <span class="text-2xl font-bold text-red-600">RaktaSetu</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/home.html" class="text-gray-700 hover:text-red-600 transition">Home</a>
+                    <a href="/requests.html" class="text-red-600 font-semibold">My Requests</a>
+                    <a href="/camps.html" class="text-gray-700 hover:text-red-600 transition">Blood Camps</a>
+                    <a href="/profile.html" class="text-gray-700 hover:text-red-600 transition">Profile</a>
+                    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">📋 My Blood Requests</h1>
+            <p class="text-gray-600 text-lg">Manage your sent and received blood donation requests</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Requests I Sent</h2>
+                <div id="sentRequests"></div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">Requests I Received</h2>
+                <div id="receivedRequests"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        requireAuth();
+
+        const statusColors = {
+            pending: 'bg-yellow-100 text-yellow-700',
+            accepted: 'bg-green-100 text-green-700',
+            rejected: 'bg-red-100 text-red-700',
+            completed: 'bg-blue-100 text-blue-700'
+        };
+
+        const urgencyColors = {
+            low: 'text-green-600',
+            medium: 'text-yellow-600',
+            high: 'text-orange-600',
+            critical: 'text-red-600'
+        };
+
+        async function loadSentRequests() {
+            const res = await fetch('/api/requests/sent');
+            const requests = await res.json();
+
+            const container = document.getElementById('sentRequests');
+            if (requests.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 py-12">No requests sent yet.</p>';
+            } else {
+                container.innerHTML = requests.map(req => `
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-bold text-gray-800">${req.donor_name}</h3>
+                                <p class="text-sm text-gray-600">Blood Type: ${req.blood_type}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[req.status]}">
+                                ${req.status.charAt(0).toUpperCase() + req.status.slice(1)}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-700 mb-2">${req.message}</p>
+                        <p class="text-xs ${urgencyColors[req.urgency]} font-semibold">
+                            Urgency: ${req.urgency.charAt(0).toUpperCase() + req.urgency.slice(1)}
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Sent: ${formatDateTime(req.created_at)}
+                        </p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function loadReceivedRequests() {
+            const res = await fetch('/api/requests/received');
+            const requests = await res.json();
+
+            const container = document.getElementById('receivedRequests');
+            if (requests.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 py-12">No requests received yet.</p>';
+            } else {
+                container.innerHTML = requests.map(req => `
+                    <div class="border border-gray-200 rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <h3 class="font-bold text-gray-800">${req.requester_name}</h3>
+                                <p class="text-sm text-gray-600">Needs: ${req.blood_type}</p>
+                            </div>
+                            <span class="px-3 py-1 rounded-full text-xs font-semibold ${statusColors[req.status]}">
+                                ${req.status.charAt(0).toUpperCase() + req.status.slice(1)}
+                            </span>
+                        </div>
+                        <p class="text-sm text-gray-700 mb-2">${req.message}</p>
+                        <p class="text-xs ${urgencyColors[req.urgency]} font-semibold mb-3">
+                            Urgency: ${req.urgency.charAt(0).toUpperCase() + req.urgency.slice(1)}
+                        </p>
+                        
+                        ${req.status === 'pending' ? `
+                            <div class="flex gap-2">
+                                <button onclick="updateRequestStatus('${req._id}', 'accepted')" class="flex-1 bg-green-600 text-white text-sm font-semibold py-2 rounded hover:bg-green-700 transition">
+                                    Accept
+                                </button>
+                                <button onclick="updateRequestStatus('${req._id}', 'rejected')" class="flex-1 bg-red-600 text-white text-sm font-semibold py-2 rounded hover:bg-red-700 transition">
+                                    Reject
+                                </button>
+                            </div>
+                        ` : ''}
+                        
+                        <p class="text-xs text-gray-500 mt-2">
+                            Received: ${formatDateTime(req.created_at)}
+                        </p>
+                    </div>
+                `).join('');
+            }
+        }
+
+        async function updateRequestStatus(requestId, status) {
+            const res = await fetch(`/api/requests/${requestId}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status })
+            });
+
+            if (res.ok) {
+                showToast(`Request ${status}!`);
+                loadReceivedRequests();
+            } else {
+                showToast('Failed to update request', 'error');
+            }
+        }
+
+        loadSentRequests();
+        loadReceivedRequests();
+    </script>
+</body>
+</html>

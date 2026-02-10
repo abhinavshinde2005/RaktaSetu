@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Camps - RaktaSetu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-white to-pink-50 min-h-screen">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">🩸</span>
+                    <span class="text-2xl font-bold text-red-600">RaktaSetu</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/home.html" class="text-gray-700 hover:text-red-600 transition">Home</a>
+                    <a href="/requests.html" class="text-gray-700 hover:text-red-600 transition">My Requests</a>
+                    <a href="/camps.html" class="text-red-600 font-semibold">Blood Camps</a>
+                    <a href="/profile.html" class="text-gray-700 hover:text-red-600 transition">Profile</a>
+                    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🏥 Blood Donation Camps</h1>
+            <p class="text-gray-600 text-lg">Join upcoming blood donation camps and save lives</p>
+        </div>
+
+        <div class="mb-8">
+            <button onclick="toggleCreateForm()" class="bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold px-6 py-3 rounded-lg hover:from-red-700 hover:to-pink-700 transition shadow-lg">
+                + Create New Blood Camp
+            </button>
+        </div>
+
+        <div id="createCampForm" class="hidden bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Create Blood Donation Camp</h2>
+            <form id="campForm" class="space-y-4">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Camp Name *</label>
+                        <input type="text" name="name" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Organizer *</label>
+                        <input type="text" name="organizer" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Date *</label>
+                        <input type="date" name="date" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Time *</label>
+                        <input type="time" name="time" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Venue *</label>
+                        <input type="text" name="venue" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">City *</label>
+                        <input type="text" name="city" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">State *</label>
+                        <input type="text" name="state" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Contact Person *</label>
+                        <input type="text" name="contact_person" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Contact Phone *</label>
+                        <input type="tel" name="contact_phone" required pattern="[0-9]{10}" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Address *</label>
+                    <textarea name="address" required rows="2" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">Description</label>
+                    <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="toggleCreateForm()" class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
+                        Create Camp
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Upcoming Blood Camps</h2>
+            <div id="campsList"></div>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        requireAuth();
+
+        let registeredCamps = [];
+
+        function toggleCreateForm() {
+            document.getElementById('createCampForm').classList.toggle('hidden');
+        }
+
+        async function loadCamps() {
+            const [campsRes, registeredRes] = await Promise.all([
+                fetch('/api/camps'),
+                fetch('/api/camps/registered')
+            ]);
+
+            const camps = await campsRes.json();
+            registeredCamps = await registeredRes.json();
+
+            const container = document.getElementById('campsList');
+            if (camps.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-500 py-12">No upcoming blood camps at the moment.</p>';
+            } else {
+                container.innerHTML = `<div class="grid md:grid-cols-2 gap-6">${camps.map(camp => {
+                    const isRegistered = registeredCamps.includes(camp._id);
+                    const campDate = new Date(camp.date);
+                    
+                    return `
+                        <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                            <div class="flex justify-between items-start mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800">${camp.name}</h3>
+                                    <p class="text-gray-600">by ${camp.organizer}</p>
+                                </div>
+                                ${isRegistered ? '<span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Registered</span>' : ''}
+                            </div>
+                            
+                            <div class="space-y-2 mb-4 text-sm text-gray-600">
+                                <p>📅 ${formatDate(campDate)} at ${camp.time}</p>
+                                <p>📍 ${camp.venue}</p>
+                                <p>🏙️ ${camp.city}, ${camp.state}</p>
+                                <p>📞 ${camp.contact_person} - ${camp.contact_phone}</p>
+                                ${camp.description ? `<p class="text-gray-700 mt-2">${camp.description}</p>` : ''}
+                            </div>
+                            
+                            ${!isRegistered ? `
+                                <button onclick="registerForCamp('${camp._id}')" class="w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
+                                    Register for Camp
+                                </button>
+                            ` : `
+                                <button disabled class="w-full bg-gray-300 text-gray-600 font-semibold py-2 rounded-lg cursor-not-allowed">
+                                    Already Registered
+                                </button>
+                            `}
+                        </div>
+                    `;
+                }).join('')}</div>`;
+            }
+        }
+
+        async function registerForCamp(campId) {
+            const res = await fetch(`/api/camps/${campId}/register`, {
+                method: 'POST'
+            });
+
+            if (res.ok) {
+                showToast('Successfully registered for the blood camp!');
+                loadCamps();
+            } else {
+                const data = await res.json();
+                showToast(data.error || 'Failed to register', 'error');
+            }
+        }
+
+        document.getElementById('campForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            const res = await fetch('/api/camps', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                showToast('Blood camp created successfully!');
+                toggleCreateForm();
+                e.target.reset();
+                loadCamps();
+            } else {
+                showToast('Failed to create camp', 'error');
+            }
+        });
+
+        loadCamps();
+    </script>
+</body>
+</html>

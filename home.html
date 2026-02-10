@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - RaktaSetu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-white to-pink-50 min-h-screen">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">🩸</span>
+                    <span class="text-2xl font-bold text-red-600">RaktaSetu</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/home.html" class="text-red-600 font-semibold">Home</a>
+                    <a href="/requests.html" class="text-gray-700 hover:text-red-600 transition">My Requests</a>
+                    <a href="/camps.html" class="text-gray-700 hover:text-red-600 transition">Blood Camps</a>
+                    <a href="/profile.html" class="text-gray-700 hover:text-red-600 transition">Profile</a>
+                    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8">
+            <div class="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl shadow-xl p-8 text-white">
+                <h1 class="text-4xl font-bold mb-2">Welcome, <span id="userName"></span>! 👋</h1>
+                <p class="text-xl">Your Blood Type: <span class="font-bold text-2xl" id="userBloodType"></span></p>
+                <p class="mt-2 text-red-100">Together, we can save lives. Search for donors or register for blood camps.</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">🔍 Search Blood Donors</h2>
+            
+            <form id="searchForm" class="space-y-4">
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Blood Type</label>
+                        <select name="blood_type" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            <option value="">All Blood Types</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">City</label>
+                        <input type="text" name="city" placeholder="Enter city name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold py-3 rounded-lg hover:from-red-700 hover:to-pink-700 transition shadow-lg">
+                            Search Donors
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="searchResults" class="hidden bg-white rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Search Results (<span id="resultCount">0</span> donors found)</h2>
+            <div id="donorsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6">
+            <a href="/camps.html" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105">
+                <div class="text-4xl mb-3">🏥</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Blood Camps</h3>
+                <p class="text-gray-600">Register for upcoming blood donation camps in your area</p>
+            </a>
+            
+            <a href="/requests.html" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105">
+                <div class="text-4xl mb-3">📋</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">My Requests</h3>
+                <p class="text-gray-600">View and manage your blood donation requests</p>
+            </a>
+            
+            <a href="/profile.html" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105">
+                <div class="text-4xl mb-3">👤</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">My Profile</h3>
+                <p class="text-gray-600">Update your information and donation preferences</p>
+            </a>
+        </div>
+    </div>
+
+    <div id="requestModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Request Blood Donation</h3>
+            <form id="requestForm">
+                <input type="hidden" name="donor_id" id="donor_id">
+                <input type="hidden" name="donor_name" id="donor_name">
+                <input type="hidden" name="blood_type" id="blood_type">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Donor Name</label>
+                    <input type="text" id="donor_name_display" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Urgency Level</label>
+                    <select name="urgency" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                        <option value="low">Low - Within a week</option>
+                        <option value="medium">Medium - Within 2-3 days</option>
+                        <option value="high">High - Within 24 hours</option>
+                        <option value="critical">Critical - Immediate</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Message</label>
+                    <textarea name="message" required rows="3" placeholder="Please describe your requirement..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="closeRequestModal()" class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
+                        Send Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+    <script>
+        requireAuth();
+
+        let currentUser;
+
+        async function loadUser() {
+            const res = await fetch('/api/user');
+            currentUser = await res.json();
+            document.getElementById('userName').textContent = currentUser.name;
+            document.getElementById('userBloodType').textContent = currentUser.blood_type;
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const params = new URLSearchParams(formData);
+
+            const res = await fetch(`/api/donors?${params}`);
+            const donors = await res.json();
+
+            document.getElementById('resultCount').textContent = donors.length;
+            document.getElementById('searchResults').classList.remove('hidden');
+
+            const donorsList = document.getElementById('donorsList');
+            if (donors.length === 0) {
+                donorsList.innerHTML = '<p class="col-span-3 text-center text-gray-500 py-12">No donors found matching your criteria.</p>';
+            } else {
+                donorsList.innerHTML = donors.map(donor => `
+                    <div class="border border-gray-200 rounded-xl p-6 hover:shadow-lg transition">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800">${donor.name}</h3>
+                                <p class="text-gray-600">${donor.city}, ${donor.state}</p>
+                            </div>
+                            <div class="bg-red-100 text-red-600 font-bold text-2xl px-4 py-2 rounded-lg">
+                                ${donor.blood_type}
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4 text-sm text-gray-600">
+                            <p>📞 ${donor.phone}</p>
+                            <p>⚖️ Weight: ${donor.weight} kg</p>
+                            ${donor.last_donation_date ? `<p>🩸 Last Donation: ${formatDate(donor.last_donation_date)}</p>` : ''}
+                        </div>
+                        
+                        <button onclick="openRequestModal('${donor._id}', '${donor.name}', '${donor.blood_type}')" class="w-full bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
+                            Request Blood
+                        </button>
+                    </div>
+                `).join('');
+            }
+        });
+
+        function openRequestModal(donorId, donorName, bloodType) {
+            document.getElementById('donor_id').value = donorId;
+            document.getElementById('donor_name').value = donorName;
+            document.getElementById('donor_name_display').value = `${donorName} (${bloodType})`;
+            document.getElementById('blood_type').value = bloodType;
+            document.getElementById('requestModal').classList.remove('hidden');
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').classList.add('hidden');
+        }
+
+        document.getElementById('requestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            const res = await fetch('/api/requests', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            if (res.ok) {
+                showToast('Blood request sent successfully!');
+                closeRequestModal();
+                e.target.reset();
+            } else {
+                showToast('Failed to send request', 'error');
+            }
+        });
+
+        loadUser();
+    </script>
+</body>
+</html>
