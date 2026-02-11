@@ -24,8 +24,20 @@
             <div class="bg-white rounded-2xl shadow-2xl p-8 glass-effect" id="loginCard">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center gradient-text">Welcome Back</h2>
                 
+                <!-- Tab Selection -->
+                <div class="flex gap-4 mb-6">
+                    <button type="button" onclick="switchTab('user')" id="userTab" class="flex-1 py-2 px-4 font-bold rounded-lg transition bg-gradient-to-r from-red-600 to-pink-600 text-white">
+                        🩸 Donor Login
+                    </button>
+                    <button type="button" onclick="switchTab('bloodbank')" id="bloodbankTab" class="flex-1 py-2 px-4 font-bold rounded-lg transition bg-gray-200 text-gray-700 hover:bg-gray-300">
+                        🏥 Blood Bank Login
+                    </button>
+                </div>
+                
                 <div id="error" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded"></div>
 
+                <!-- User Login Form -->
+                <div id="userLoginForm">
                 <form id="loginForm" class="space-y-6">
                     <div>
                         <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
@@ -41,6 +53,24 @@
                         Login
                     </button>
                 </form>
+                </div>
+
+                <!-- Blood Bank Login Form -->
+                <div id="bloodbankLoginForm" style="display: none;">
+                    <form id="bloodbankForm" class="space-y-6">
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Email Address</label>
+                            <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Password</label>
+                            <input type="password" name="password" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-4 rounded-lg hover:from-blue-700 hover:to-blue-800 transition shadow-lg">
+                            Login as Blood Bank
+                        </button>
+                    </form>
+                </div>
                 
                 <div class="mt-6 text-center">
                     <p class="text-gray-600">
@@ -71,6 +101,20 @@
 
     <script src="js/app.js"></script>
     <script>
+        function switchTab(tab) {
+            if (tab === 'user') {
+                document.getElementById('userLoginForm').style.display = 'block';
+                document.getElementById('bloodbankLoginForm').style.display = 'none';
+                document.getElementById('userTab').className = 'flex-1 py-2 px-4 font-bold rounded-lg transition bg-gradient-to-r from-red-600 to-pink-600 text-white';
+                document.getElementById('bloodbankTab').className = 'flex-1 py-2 px-4 font-bold rounded-lg transition bg-gray-200 text-gray-700 hover:bg-gray-300';
+            } else {
+                document.getElementById('userLoginForm').style.display = 'none';
+                document.getElementById('bloodbankLoginForm').style.display = 'block';
+                document.getElementById('userTab').className = 'flex-1 py-2 px-4 font-bold rounded-lg transition bg-gray-200 text-gray-700 hover:bg-gray-300';
+                document.getElementById('bloodbankTab').className = 'flex-1 py-2 px-4 font-bold rounded-lg transition bg-gradient-to-r from-blue-600 to-blue-700 text-white';
+            }
+        }
+
         // GSAP Animations
         gsap.from('#header', { duration: 1, y: -50, opacity: 0, ease: 'bounce' });
         gsap.from('#loginCard', { duration: 1, scale: 0.8, opacity: 0, delay: 0.3, ease: 'back' });
@@ -123,6 +167,32 @@
                 }
             } catch (err) {
                 console.error('❌ Login error:', err);
+                document.getElementById('error').textContent = 'Login failed. Please try again.';
+                document.getElementById('error').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('bloodbankForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const res = await fetch(API_URL + '/api/bloodbank/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    window.location.href = 'bloodbank-dashboard.html';
+                } else {
+                    document.getElementById('error').textContent = result.error;
+                    document.getElementById('error').classList.remove('hidden');
+                }
+            } catch (err) {
                 document.getElementById('error').textContent = 'Login failed. Please try again.';
                 document.getElementById('error').classList.remove('hidden');
             }

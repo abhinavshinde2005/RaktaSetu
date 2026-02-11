@@ -386,7 +386,7 @@
                 if (res.ok) {
                     document.getElementById('success').textContent = 'Blood bank registered! Redirecting to login...';
                     document.getElementById('success').classList.remove('hidden');
-                    setTimeout(() => window.location.href = 'bloodbank-login.html', 2000);
+                    setTimeout(() => window.location.href = 'login.html', 2000);
                 } else {
                     document.getElementById('error').textContent = result.error;
                     document.getElementById('error').classList.remove('hidden');
