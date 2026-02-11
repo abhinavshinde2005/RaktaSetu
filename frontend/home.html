@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - RaktaSetu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="config.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-white to-pink-50 min-h-screen">
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <span class="text-3xl">🩸</span>
+                    <span class="text-2xl font-bold text-red-600">RaktaSetu</span>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="home.html" class="text-red-600 font-semibold">Home</a>
+                    <a href="requests.html" class="text-gray-700 hover:text-red-600 transition">My Requests</a>
+                    <a href="camps.html" class="text-gray-700 hover:text-red-600 transition">Blood Camps</a>
+                    <a href="profile.html" class="text-gray-700 hover:text-red-600 transition">Profile</a>
+                    <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="mb-8" id="welcomeCard">
+            <div class="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl shadow-xl p-8 text-white pulse-glow">
+                <h1 class="text-4xl font-bold mb-2">Welcome, <span id="userName"></span>! 👋</h1>
+                <p class="text-xl">Your Blood Type: <span class="font-bold text-2xl" id="userBloodType"></span></p>
+                <p class="mt-2 text-red-100">Together, we can save lives. Search for donors or register for blood camps.</p>
+            </div>
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8" id="statsCards">
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Donors</p>
+                        <p class="text-3xl font-bold text-red-600 counter" data-target="1247">0</p>
+                    </div>
+                    <div class="text-4xl">🩸</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Active Requests</p>
+                        <p class="text-3xl font-bold text-blue-600 counter" data-target="23">0</p>
+                    </div>
+                    <div class="text-4xl">📝</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Lives Saved</p>
+                        <p class="text-3xl font-bold text-green-600 counter" data-target="892">0</p>
+                    </div>
+                    <div class="text-4xl">❤️</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Upcoming Camps</p>
+                        <p class="text-3xl font-bold text-purple-600 counter" data-target="12">0</p>
+                    </div>
+                    <div class="text-4xl">🏕️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6" id="chartCard1">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">🩸 My Donation History</h3>
+                <div class="text-center mb-4">
+                    <p class="text-5xl font-bold text-red-600" id="totalDonations">0</p>
+                    <p class="text-gray-600">Total Donations</p>
+                </div>
+                <canvas id="myDonationsChart"></canvas>
+            </div>
+            <div class="bg-white rounded-2xl shadow-xl p-6" id="chartCard2">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">🏆 Top Donors Leaderboard</h3>
+                <div id="leaderboard" class="space-y-3"></div>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-br from-white to-red-50 rounded-2xl shadow-2xl p-8 mb-8 border-2 border-red-100" id="searchCard">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2 flex items-center gap-3">
+                <span class="text-4xl">🔍</span> Search Blood Donors
+            </h2>
+            <p class="text-gray-600 mb-6">Find eligible donors by blood type and location</p>
+            
+            <form id="searchForm" class="space-y-4">
+                <div class="grid md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Blood Type *</label>
+                        <select name="blood_type" required class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition bg-white">
+                            <option value="">Select Blood Type</option>
+                            <option value="A+">A+ (A Positive)</option>
+                            <option value="A-">A- (A Negative)</option>
+                            <option value="B+">B+ (B Positive)</option>
+                            <option value="B-">B- (B Negative)</option>
+                            <option value="AB+">AB+ (AB Positive)</option>
+                            <option value="AB-">AB- (AB Negative)</option>
+                            <option value="O+">O+ (O Positive)</option>
+                            <option value="O-">O- (O Negative)</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Location (City/State/Pincode)</label>
+                        <input type="text" name="location" placeholder="e.g., Mumbai, Maharashtra, 400001" class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-red-500 transition">
+                    </div>
+                    
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold py-3 rounded-lg hover:from-red-700 hover:to-pink-700 transition shadow-lg transform hover:scale-105">
+                            🔍 Search Donors
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="searchResults" class="hidden mb-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6 mb-4">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
+                    <span class="text-3xl">🩸</span>
+                    Search Results: <span class="text-red-600" id="resultCount">0</span> Eligible Donors Found
+                </h2>
+            </div>
+            <div id="donorsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-6" id="quickLinks">
+            <a href="camps.html" class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="text-4xl mb-3">🏥</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">Blood Camps</h3>
+                <p class="text-gray-600">Register for upcoming blood donation camps in your area</p>
+            </a>
+            
+            <a href="requests.html" class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="text-4xl mb-3">📋</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">My Requests</h3>
+                <p class="text-gray-600">View and manage your blood donation requests</p>
+            </a>
+            
+            <a href="profile.html" class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="text-4xl mb-3">👤</div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">My Profile</h3>
+                <p class="text-gray-600">Update your information and donation preferences</p>
+            </a>
+        </div>
+    </div>
+
+    <div id="requestModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Request Blood Donation</h3>
+            <form id="requestForm">
+                <input type="hidden" name="donor_id" id="donor_id">
+                <input type="hidden" name="donor_name" id="donor_name">
+                <input type="hidden" name="blood_type" id="blood_type">
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Donor Name</label>
+                    <input type="text" id="donor_name_display" readonly class="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 font-semibold mb-2">Urgency Level</label>
+                    <select name="urgency" required class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500">
+                        <option value="low">Low - Within a week</option>
+                        <option value="medium">Medium - Within 2-3 days</option>
+                        <option value="high">High - Within 24 hours</option>
+                        <option value="critical">Critical - Immediate</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 font-semibold mb-2">Message</label>
+                    <textarea name="message" required rows="3" placeholder="Please describe your requirement..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500"></textarea>
+                </div>
+                
+                <div class="flex gap-4">
+                    <button type="button" onclick="closeRequestModal()" class="flex-1 bg-gray-300 text-gray-700 font-semibold py-2 rounded-lg hover:bg-gray-400 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
+                        Send Request
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        requireAuth();
+
+        let currentUser;
+
+        // GSAP Animations
+        gsap.from('#welcomeCard', { duration: 1, y: -50, opacity: 0, ease: 'power3.out' });
+        gsap.from('#statsCards > div', { duration: 0.8, y: 50, opacity: 0, stagger: 0.1, delay: 0.3 });
+        gsap.from('#chartCard1', { duration: 1, x: -100, opacity: 0, delay: 0.6 });
+        gsap.from('#chartCard2', { duration: 1, x: 100, opacity: 0, delay: 0.6 });
+        gsap.from('#searchCard', { duration: 1, scale: 0.9, opacity: 0, delay: 0.8 });
+        gsap.from('#quickLinks > a', { duration: 0.8, y: 50, opacity: 0, stagger: 0.15, delay: 1 });
+
+        // Counter Animation
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('.counter').forEach(animateCounter);
+        }, 500);
+
+        // Chart.js - My Donations
+        const myDonationsCtx = document.getElementById('myDonationsChart').getContext('2d');
+        let myDonationsChart = new Chart(myDonationsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Donations',
+                    data: [0, 0, 0, 0, 0, 0],
+                    backgroundColor: '#dc2626',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: { legend: { display: false } },
+                scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+            }
+        });
+
+        async function loadLeaderboard() {
+            try {
+                const res = await fetch(API_URL + '/api/donors/leaderboard', { credentials: 'include' });
+                const leaders = await res.json();
+                const html = leaders.map((d, i) => `
+                    <div class="flex items-center justify-between p-3 bg-gradient-to-r ${i === 0 ? 'from-yellow-100 to-yellow-50' : i === 1 ? 'from-gray-100 to-gray-50' : i === 2 ? 'from-orange-100 to-orange-50' : 'from-red-50 to-white'} rounded-lg">
+                        <div class="flex items-center gap-3">
+                            <span class="text-2xl font-bold ${i === 0 ? 'text-yellow-600' : i === 1 ? 'text-gray-600' : i === 2 ? 'text-orange-600' : 'text-red-600'}">${i + 1}</span>
+                            <div>
+                                <p class="font-bold text-gray-800">${d.name}</p>
+                                <p class="text-xs text-gray-600">${d.blood_type} | ${d.city}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-red-600">${d.donation_count || 0}</p>
+                            <p class="text-xs text-gray-600">donations</p>
+                        </div>
+                    </div>
+                `).join('');
+                document.getElementById('leaderboard').innerHTML = html || '<p class="text-gray-500 text-center">No data yet</p>';
+            } catch (err) {
+                console.error('❌ Leaderboard error:', err);
+            }
+        }
+
+        async function loadUser() {
+            try {
+                const res = await fetch(API_URL + '/api/user', { credentials: 'include' });
+                currentUser = await res.json();
+                document.getElementById('userName').textContent = currentUser.name;
+                document.getElementById('userBloodType').textContent = currentUser.blood_type;
+                document.getElementById('totalDonations').textContent = currentUser.donation_count || 0;
+                
+                const count = currentUser.donation_count || 0;
+                const data = Array(6).fill(0);
+                for (let i = 0; i < Math.min(count, 6); i++) data[5 - i] = 1;
+                myDonationsChart.data.datasets[0].data = data;
+                myDonationsChart.update();
+            } catch (err) {
+                console.error('❌ User load error:', err);
+            }
+        }
+
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const params = new URLSearchParams(formData);
+
+            console.log('🔍 Searching donors...');
+            try {
+                const res = await fetch(API_URL + `/api/donors?${params}`, { credentials: 'include' });
+                const donors = await res.json();
+                console.log(`📥 Found ${donors.length} donors`);
+
+                document.getElementById('resultCount').textContent = donors.length;
+                document.getElementById('searchResults').classList.remove('hidden');
+
+                const donorsList = document.getElementById('donorsList');
+                if (donors.length === 0) {
+                    donorsList.innerHTML = '<p class="col-span-3 text-center text-gray-500 py-12">No eligible donors found. Try different search criteria.</p>';
+                } else {
+                    donorsList.innerHTML = donors.map(donor => `
+                        <div class="border-2 border-red-100 rounded-xl p-6 hover:shadow-xl hover:border-red-300 transition bg-gradient-to-br from-white to-red-50">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-gray-800">${donor.name}</h3>
+                                    <p class="text-gray-600">${donor.city}, ${donor.state}</p>
+                                    ${donor.blood_bank_id ? `<span class="inline-block bg-blue-600 text-white text-xs px-2 py-1 rounded-full mt-1">🏥 ${donor.blood_bank_id.name}</span>` : ''}
+                                </div>
+                                <div class="bg-gradient-to-br from-red-500 to-red-600 text-white font-bold text-2xl px-5 py-3 rounded-xl shadow-lg">
+                                    ${donor.blood_type}
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2 mb-4 text-sm text-gray-700 bg-white/50 p-3 rounded-lg">
+                                <p>📞 ${donor.phone}</p>
+                                <p>⚖️ Weight: ${donor.weight} kg</p>
+                                <p>🩸 Donations: ${donor.donation_count || 0}</p>
+                                ${donor.last_donation_date ? `<p>📅 Last: ${formatDate(donor.last_donation_date)}</p>` : '<p class="text-green-600 font-semibold">✅ Ready to Donate</p>'}
+                            </div>
+                            
+                            <div class="flex gap-2">
+                                <button onclick="sendWhatsApp('${donor.phone}', '${donor.name}', '${donor.blood_type}')" class="flex-1 bg-green-600 text-white font-semibold py-2 rounded-lg hover:bg-green-700 transition flex items-center justify-center gap-2">
+                                    <span>📱</span> WhatsApp
+                                </button>
+                                <button onclick="sendSMS('${donor.phone}', '${donor.name}', '${donor.blood_type}')" class="flex-1 bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
+                                    <span>💬</span> SMS
+                                </button>
+                                <button onclick="openRequestModal('${donor._id}', '${donor.name}', '${donor.blood_type}')" class="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
+                                    Request
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            } catch (err) {
+                console.error('❌ Search error:', err);
+                showToast('Search failed', 'error');
+            }
+        });
+
+        function sendWhatsApp(phone, name, bloodType) {
+            const message = `🩸 *Urgent Blood Donation Request*\n\nHello ${name},\n\nWe urgently need ${bloodType} blood donation. Your help can save a life!\n\nCan you please donate blood? It would mean the world to someone in need.\n\nThank you for being a hero!\n\n- RaktaSetu Team`;
+            const whatsappUrl = `https://wa.me/91${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+
+        function sendSMS(phone, name, bloodType) {
+            const message = `Urgent: We need ${bloodType} blood donation. Can you help save a life? - RaktaSetu`;
+            const smsUrl = `sms:${phone}?body=${encodeURIComponent(message)}`;
+            window.location.href = smsUrl;
+        }
+
+        function openRequestModal(donorId, donorName, bloodType) {
+            document.getElementById('donor_id').value = donorId;
+            document.getElementById('donor_name').value = donorName;
+            document.getElementById('donor_name_display').value = `${donorName} (${bloodType})`;
+            document.getElementById('blood_type').value = bloodType;
+            document.getElementById('requestModal').classList.remove('hidden');
+        }
+
+        function closeRequestModal() {
+            document.getElementById('requestModal').classList.add('hidden');
+        }
+
+        document.getElementById('requestForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const res = await fetch(API_URL + '/api/requests', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    body: JSON.stringify(data)
+                });
+
+                if (res.ok) {
+                    showToast('Blood request sent successfully!');
+                    closeRequestModal();
+                    e.target.reset();
+                } else {
+                    const result = await res.json();
+                    showToast(result.error || 'Failed to send request', 'error');
+                }
+            } catch (err) {
+                console.error('❌ Request error:', err);
+                showToast('Failed to send request', 'error');
+            }
+        });
+
+        loadUser();
+        loadLeaderboard();
+    </script>
+</body>
+</html>

@@ -6,6 +6,9 @@
     <title>Home - RaktaSetu</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body { font-family: 'Poppins', sans-serif; }
     </style>
@@ -30,15 +33,67 @@
     </nav>
 
     <div class="container mx-auto px-4 py-8">
-        <div class="mb-8">
-            <div class="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl shadow-xl p-8 text-white">
+        <div class="mb-8" id="welcomeCard">
+            <div class="bg-gradient-to-r from-red-600 to-pink-600 rounded-2xl shadow-xl p-8 text-white pulse-glow">
                 <h1 class="text-4xl font-bold mb-2">Welcome, <span id="userName"></span>! 👋</h1>
                 <p class="text-xl">Your Blood Type: <span class="font-bold text-2xl" id="userBloodType"></span></p>
                 <p class="mt-2 text-red-100">Together, we can save lives. Search for donors or register for blood camps.</p>
             </div>
         </div>
 
-        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8">
+        <!-- Statistics Dashboard -->
+        <div class="grid md:grid-cols-4 gap-6 mb-8" id="statsCards">
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Donors</p>
+                        <p class="text-3xl font-bold text-red-600 counter" data-target="1247">0</p>
+                    </div>
+                    <div class="text-4xl">🩸</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Active Requests</p>
+                        <p class="text-3xl font-bold text-blue-600 counter" data-target="23">0</p>
+                    </div>
+                    <div class="text-4xl">📝</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Lives Saved</p>
+                        <p class="text-3xl font-bold text-green-600 counter" data-target="892">0</p>
+                    </div>
+                    <div class="text-4xl">❤️</div>
+                </div>
+            </div>
+            <div class="bg-white rounded-xl shadow-lg p-6 card-hover">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Upcoming Camps</p>
+                        <p class="text-3xl font-bold text-purple-600 counter" data-target="12">0</p>
+                    </div>
+                    <div class="text-4xl">🏕️</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-2xl shadow-xl p-6" id="chartCard1">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Blood Type Distribution</h3>
+                <canvas id="bloodTypeChart"></canvas>
+            </div>
+            <div class="bg-white rounded-2xl shadow-xl p-6" id="chartCard2">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Monthly Donations</h3>
+                <canvas id="donationsChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-xl p-8 mb-8" id="searchCard">
             <h2 class="text-3xl font-bold text-gray-800 mb-6">🔍 Search Blood Donors</h2>
             
             <form id="searchForm" class="space-y-4">
@@ -77,20 +132,20 @@
             <div id="donorsList" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </div>
 
-        <div class="grid md:grid-cols-3 gap-6">
-            <a href="/camps.html" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105">
+        <div class="grid md:grid-cols-3 gap-6" id="quickLinks">
+            <a href="/camps.html" class="bg-white rounded-xl shadow-lg p-6 card-hover">
                 <div class="text-4xl mb-3">🏥</div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">Blood Camps</h3>
                 <p class="text-gray-600">Register for upcoming blood donation camps in your area</p>
             </a>
             
-            <a href="/requests.html" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105">
+            <a href="/requests.html" class="bg-white rounded-xl shadow-lg p-6 card-hover">
                 <div class="text-4xl mb-3">📋</div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">My Requests</h3>
                 <p class="text-gray-600">View and manage your blood donation requests</p>
             </a>
             
-            <a href="/profile.html" class="bg-white rounded-xl shadow-lg p-6 hover:shadow-2xl transition transform hover:scale-105">
+            <a href="/profile.html" class="bg-white rounded-xl shadow-lg p-6 card-hover">
                 <div class="text-4xl mb-3">👤</div>
                 <h3 class="text-xl font-bold text-gray-800 mb-2">My Profile</h3>
                 <p class="text-gray-600">Update your information and donation preferences</p>
@@ -143,6 +198,93 @@
         requireAuth();
 
         let currentUser;
+
+        // GSAP Animations
+        gsap.from('#welcomeCard', { duration: 1, y: -50, opacity: 0, ease: 'power3.out' });
+        gsap.from('#statsCards > div', { duration: 0.8, y: 50, opacity: 0, stagger: 0.1, delay: 0.3 });
+        gsap.from('#chartCard1', { duration: 1, x: -100, opacity: 0, delay: 0.6 });
+        gsap.from('#chartCard2', { duration: 1, x: 100, opacity: 0, delay: 0.6 });
+        gsap.from('#searchCard', { duration: 1, scale: 0.9, opacity: 0, delay: 0.8 });
+        gsap.from('#quickLinks > a', { duration: 0.8, y: 50, opacity: 0, stagger: 0.15, delay: 1 });
+
+        // Counter Animation
+        function animateCounter(element) {
+            const target = parseInt(element.getAttribute('data-target'));
+            const duration = 2000;
+            const increment = target / (duration / 16);
+            let current = 0;
+            
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target;
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(current);
+                }
+            }, 16);
+        }
+
+        setTimeout(() => {
+            document.querySelectorAll('.counter').forEach(animateCounter);
+        }, 500);
+
+        // Chart.js - Blood Type Distribution
+        const bloodTypeCtx = document.getElementById('bloodTypeChart').getContext('2d');
+        new Chart(bloodTypeCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'],
+                datasets: [{
+                    data: [28, 8, 24, 6, 12, 4, 15, 3],
+                    backgroundColor: [
+                        '#ef4444', '#dc2626', '#f97316', '#ea580c',
+                        '#ec4899', '#db2777', '#8b5cf6', '#7c3aed'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    tooltip: {
+                        callbacks: {
+                            label: (context) => `${context.label}: ${context.parsed}%`
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart.js - Monthly Donations
+        const donationsCtx = document.getElementById('donationsChart').getContext('2d');
+        new Chart(donationsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'Donations',
+                    data: [65, 78, 90, 81, 96, 105],
+                    borderColor: '#dc2626',
+                    backgroundColor: 'rgba(220, 38, 38, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
 
         async function loadUser() {
             const res = await fetch('/api/user');

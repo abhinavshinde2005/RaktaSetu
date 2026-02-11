@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RaktaSetu - Save Lives Through Blood Donation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .blood-drop {
+            animation: drop 3s ease-in-out infinite;
+        }
+        @keyframes drop {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(20px) scale(1.1); }
+        }
+        .hero-gradient {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 50%, #7f1d1d 100%);
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <nav class="fixed w-full bg-white/95 backdrop-blur-sm shadow-lg z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-4xl blood-drop">🩸</span>
+                <span class="text-3xl font-bold text-red-600">RaktaSetu</span>
+            </div>
+            <div class="flex gap-4">
+                <a href="login.html" class="px-6 py-2 text-red-600 font-semibold hover:bg-red-50 rounded-lg transition">Login</a>
+                <a href="register.html" class="px-6 py-2 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition shadow-lg">Register</a>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero-gradient min-h-screen flex items-center justify-center text-white pt-20">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-8">
+                <h1 class="text-7xl font-bold mb-4 animate-pulse">🩸 RaktaSetu</h1>
+                <p class="text-3xl font-light mb-8">Connecting Lives, One Drop at a Time</p>
+                <p class="text-xl text-red-100 max-w-2xl mx-auto mb-12">
+                    Every 2 seconds, someone needs blood. Be the bridge between life and death. 
+                    Join India's most trusted blood donation network.
+                </p>
+            </div>
+            
+            <div class="flex gap-6 justify-center mb-16">
+                <a href="register.html" class="px-8 py-4 bg-white text-red-600 font-bold text-lg rounded-lg hover:scale-105 transition shadow-2xl">
+                    Become a Donor
+                </a>
+                <a href="register.html" class="px-8 py-4 bg-blue-600 text-white font-bold text-lg rounded-lg hover:bg-blue-700 transition shadow-2xl">
+                    🏥 Blood Bank Register
+                </a>
+                <a href="login.html" class="px-8 py-4 bg-red-800 text-white font-bold text-lg rounded-lg hover:bg-red-900 transition border-2 border-white">
+                    Find Blood
+                </a>
+            </div>
+
+            <div class="grid md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <p class="text-5xl font-bold mb-2">10K+</p>
+                    <p class="text-red-100">Active Donors</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <p class="text-5xl font-bold mb-2">5K+</p>
+                    <p class="text-red-100">Lives Saved</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <p class="text-5xl font-bold mb-2">100+</p>
+                    <p class="text-red-100">Blood Camps</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-sm rounded-xl p-6">
+                    <p class="text-5xl font-bold mb-2">24/7</p>
+                    <p class="text-red-100">Support</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-gradient-to-br from-red-50 to-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-5xl font-bold text-center text-gray-800 mb-16">Why Donate Blood?</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="bg-white rounded-2xl shadow-xl p-8 hover:scale-105 transition">
+                    <div class="text-6xl mb-4">❤️</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Save Lives</h3>
+                    <p class="text-gray-600">One donation can save up to 3 lives. Be a hero without a cape.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-8 hover:scale-105 transition">
+                    <div class="text-6xl mb-4">🏥</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Health Benefits</h3>
+                    <p class="text-gray-600">Regular donation reduces heart disease risk and burns calories.</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-xl p-8 hover:scale-105 transition">
+                    <div class="text-6xl mb-4">🤝</div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Community Impact</h3>
+                    <p class="text-gray-600">Join a network of heroes making a real difference every day.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-5xl font-bold text-center text-gray-800 mb-16">Blood Type Compatibility</h2>
+            <div class="max-w-4xl mx-auto bg-gradient-to-br from-red-50 to-pink-50 rounded-2xl shadow-2xl p-8">
+                <div class="grid grid-cols-4 gap-4 text-center">
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <p class="text-3xl font-bold text-red-600 mb-2">O-</p>
+                        <p class="text-sm text-gray-600">Universal Donor</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <p class="text-3xl font-bold text-red-600 mb-2">O+</p>
+                        <p class="text-sm text-gray-600">Most Common</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <p class="text-3xl font-bold text-red-600 mb-2">AB+</p>
+                        <p class="text-sm text-gray-600">Universal Receiver</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-6 shadow-lg">
+                        <p class="text-3xl font-bold text-red-600 mb-2">AB-</p>
+                        <p class="text-sm text-gray-600">Rarest Type</p>
+                    </div>
+                </div>
+                <p class="text-center text-gray-700 mt-8 text-lg">
+                    Every blood type is precious. Register today to find compatible donors instantly.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-20 hero-gradient text-white">
+        <div class="container mx-auto px-4 text-center">
+            <h2 class="text-5xl font-bold mb-8">Ready to Save Lives?</h2>
+            <p class="text-2xl mb-12 text-red-100">Join thousands of donors making a difference every day</p>
+            <a href="register.html" class="inline-block px-12 py-5 bg-white text-red-600 font-bold text-xl rounded-lg hover:scale-110 transition shadow-2xl">
+                Register Now - It's Free
+            </a>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="flex items-center justify-center space-x-2 mb-4">
+                <span class="text-4xl">🩸</span>
+                <span class="text-3xl font-bold">RaktaSetu</span>
+            </div>
+            <p class="text-gray-400 mb-4">Connecting Lives, One Drop at a Time</p>
+            <p class="text-gray-500 text-sm">© 2024 RaktaSetu. Made with ❤️ for saving lives.</p>
+        </div>
+    </footer>
+</body>
+</html>

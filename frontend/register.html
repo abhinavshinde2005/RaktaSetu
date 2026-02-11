@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - RaktaSetu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="config.js"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .form-step { display: none; }
+        .form-step.active { display: block; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-red-50 via-white to-pink-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="text-center mb-8" id="header">
+                <h1 class="text-5xl font-bold text-red-600 mb-2 float-animation">🩸 RaktaSetu</h1>
+                <p class="text-gray-600 text-lg">Connecting Lives, One Drop at a Time</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-2xl p-8 glass-effect" id="registerCard">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center gradient-text">Create Your Account</h2>
+                
+                <!-- Tab Selection -->
+                <div class="flex gap-4 mb-8">
+                    <button type="button" onclick="switchTab('user')" id="userTab" class="flex-1 py-3 px-6 font-bold rounded-lg transition bg-gradient-to-r from-red-600 to-pink-600 text-white">
+                        🫀 Donor Registration
+                    </button>
+                    <button type="button" onclick="switchTab('bloodbank')" id="bloodbankTab" class="flex-1 py-3 px-6 font-bold rounded-lg transition bg-gray-200 text-gray-700 hover:bg-gray-300">
+                        🏥 Blood Bank Registration
+                    </button>
+                </div>
+
+                <!-- User Registration Form -->
+                <div id="userForm" class="registration-form">
+                
+                <div class="mb-8">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-sm font-semibold text-red-600">Step <span id="currentStep">1</span> of 3</span>
+                        <span class="text-sm text-gray-600"><span id="progressPercent">33</span>% Complete</span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div id="progressBar" class="bg-gradient-to-r from-red-600 to-pink-600 h-2 rounded-full transition-all duration-500" style="width: 33%"></div>
+                    </div>
+                </div>
+                
+                <div id="error" class="hidden bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded"></div>
+                <div id="success" class="hidden bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded"></div>
+
+                <form id="registerForm" class="space-y-6">
+                    <div class="form-step active" data-step="1">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">👤 Basic Information</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Full Name *</label>
+                                <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Email *</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Password *</label>
+                                <input type="password" name="password" required minlength="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Phone Number *</label>
+                                <input type="tel" name="phone" required pattern="[0-9]{10}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Blood Type *</label>
+                                <select name="blood_type" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                                    <option value="">Select Blood Type</option>
+                                    <option value="A+">A+</option>
+                                    <option value="A-">A-</option>
+                                    <option value="B+">B+</option>
+                                    <option value="B-">B-</option>
+                                    <option value="AB+">AB+</option>
+                                    <option value="AB-">AB-</option>
+                                    <option value="O+">O+</option>
+                                    <option value="O-">O-</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Date of Birth *</label>
+                                <input type="date" name="date_of_birth" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Gender *</label>
+                                <select name="gender" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                                    <option value="">Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">City *</label>
+                                <input type="text" name="city" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">State *</label>
+                                <input type="text" name="state" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Pincode *</label>
+                                <input type="text" name="pincode" required pattern="[0-9]{6}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 font-semibold mb-2">Address *</label>
+                            <textarea name="address" required rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-step" data-step="2">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">🏋️ Health Information</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Weight (kg) *</label>
+                                <input type="number" name="weight" required min="45" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Height (cm) *</label>
+                                <input type="number" name="height" required min="100" step="0.1" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Do you consume alcohol? *</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="is_alcoholic" value="true" required class="mr-2">
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="is_alcoholic" value="false" required class="mr-2">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Do you smoke? *</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="is_smoker" value="true" required class="mr-2">
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="is_smoker" value="false" required class="mr-2">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <label class="block text-gray-700 font-semibold mb-2">Medical Conditions (if any)</label>
+                            <textarea name="medical_conditions" rows="2" placeholder="Diabetes, Hypertension, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-step" data-step="3">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">🩸 Donation & Emergency Contact</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Last Blood Donation Date</label>
+                                <input type="date" name="last_donation_date" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Willing to Donate Blood? *</label>
+                                <div class="flex gap-4">
+                                    <label class="flex items-center">
+                                        <input type="radio" name="willing_to_donate" value="true" required class="mr-2">
+                                        <span>Yes</span>
+                                    </label>
+                                    <label class="flex items-center">
+                                        <input type="radio" name="willing_to_donate" value="false" required class="mr-2">
+                                        <span>No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Emergency Contact Number *</label>
+                                <input type="tel" name="emergency_contact" required pattern="[0-9]{10}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                            
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Relation *</label>
+                                <input type="text" name="relation" required placeholder="Father, Mother, Spouse, etc." class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent transition">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-4 mt-6">
+                        <button type="button" id="prevBtn" class="flex-1 bg-gray-300 text-gray-700 font-bold py-3 rounded-lg hover:bg-gray-400 transition" style="display: none;">
+                            ← Previous
+                        </button>
+                        <button type="button" id="nextBtn" class="flex-1 bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold py-3 rounded-lg hover:from-red-700 hover:to-pink-700 transition shadow-lg">
+                            Next →
+                        </button>
+                        <button type="submit" id="submitBtn" class="flex-1 bg-gradient-to-r from-red-600 to-pink-600 text-white font-bold py-3 rounded-lg hover:from-red-700 hover:to-pink-700 transition shadow-lg" style="display: none;">
+                            Register Now
+                        </button>
+                    </div>
+                </form>
+                </div>
+
+                <!-- Blood Bank Registration Form -->
+                <div id="bloodbankForm" class="registration-form" style="display: none;">
+                    <form id="bloodbankRegisterForm" class="space-y-6">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">🏥 Blood Bank Information</h3>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Blood Bank Name *</label>
+                                <input type="text" name="name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Email *</label>
+                                <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Password *</label>
+                                <input type="password" name="password" required minlength="6" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Phone *</label>
+                                <input type="tel" name="phone" required pattern="[0-9]{10}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">License Number *</label>
+                                <input type="text" name="license_number" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">City *</label>
+                                <input type="text" name="city" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">State *</label>
+                                <input type="text" name="state" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-semibold mb-2">Pincode *</label>
+                                <input type="text" name="pincode" required pattern="[0-9]{6}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-semibold mb-2">Address *</label>
+                            <textarea name="address" required rows="2" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white font-bold py-3 rounded-lg hover:from-blue-700 hover:to-blue-800 transition shadow-lg">
+                            Register Blood Bank
+                        </button>
+                    </form>
+                </div>
+                
+                <p class="text-center mt-6 text-gray-600">
+                    Already have an account? 
+                    <a href="login.html" class="text-red-600 font-semibold hover:underline">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script>
+        gsap.from('#header', { duration: 1, y: -50, opacity: 0, ease: 'bounce' });
+        gsap.from('#registerCard', { duration: 1, scale: 0.9, opacity: 0, delay: 0.3, ease: 'back' });
+
+        function switchTab(tab) {
+            if (tab === 'user') {
+                document.getElementById('userForm').style.display = 'block';
+                document.getElementById('bloodbankForm').style.display = 'none';
+                document.getElementById('userTab').className = 'flex-1 py-3 px-6 font-bold rounded-lg transition bg-gradient-to-r from-red-600 to-pink-600 text-white';
+                document.getElementById('bloodbankTab').className = 'flex-1 py-3 px-6 font-bold rounded-lg transition bg-gray-200 text-gray-700 hover:bg-gray-300';
+            } else {
+                document.getElementById('userForm').style.display = 'none';
+                document.getElementById('bloodbankForm').style.display = 'block';
+                document.getElementById('userTab').className = 'flex-1 py-3 px-6 font-bold rounded-lg transition bg-gray-200 text-gray-700 hover:bg-gray-300';
+                document.getElementById('bloodbankTab').className = 'flex-1 py-3 px-6 font-bold rounded-lg transition bg-gradient-to-r from-blue-600 to-blue-700 text-white';
+            }
+        }
+
+        let currentStep = 1;
+        const totalSteps = 3;
+
+        function showStep(step) {
+            document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+            document.querySelector(`[data-step="${step}"]`).classList.add('active');
+            
+            gsap.from(`[data-step="${step}"]`, { duration: 0.5, x: 50, opacity: 0 });
+            
+            document.getElementById('currentStep').textContent = step;
+            const progress = (step / totalSteps) * 100;
+            document.getElementById('progressPercent').textContent = Math.round(progress);
+            document.getElementById('progressBar').style.width = progress + '%';
+            
+            document.getElementById('prevBtn').style.display = step === 1 ? 'none' : 'block';
+            document.getElementById('nextBtn').style.display = step === totalSteps ? 'none' : 'block';
+            document.getElementById('submitBtn').style.display = step === totalSteps ? 'block' : 'none';
+        }
+
+        document.getElementById('nextBtn').addEventListener('click', () => {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            }
+        });
+
+        document.getElementById('prevBtn').addEventListener('click', () => {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+            
+            data.is_alcoholic = data.is_alcoholic === 'true';
+            data.is_smoker = data.is_smoker === 'true';
+            data.willing_to_donate = data.willing_to_donate === 'true';
+            data.weight = parseFloat(data.weight);
+            data.height = parseFloat(data.height);
+
+            console.log('📝 Registration data:', data);
+            
+            try {
+                console.log('🔄 Sending to:', API_URL + '/api/register');
+                const res = await fetch(API_URL + '/api/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+                console.log('📥 Response:', result);
+                if (res.ok) {
+                    document.getElementById('success').textContent = 'Registration successful! Redirecting to login...';
+                    document.getElementById('success').classList.remove('hidden');
+                    setTimeout(() => window.location.href = 'login.html', 2000);
+                } else {
+                    document.getElementById('error').textContent = result.error;
+                    document.getElementById('error').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error('❌ Registration error:', err);
+                document.getElementById('error').textContent = 'Registration failed. Please try again.';
+                document.getElementById('error').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('bloodbankRegisterForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData);
+
+            try {
+                const res = await fetch(API_URL + '/api/bloodbank/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await res.json();
+                if (res.ok) {
+                    document.getElementById('success').textContent = 'Blood bank registered! Redirecting to login...';
+                    document.getElementById('success').classList.remove('hidden');
+                    setTimeout(() => window.location.href = 'bloodbank-login.html', 2000);
+                } else {
+                    document.getElementById('error').textContent = result.error;
+                    document.getElementById('error').classList.remove('hidden');
+                }
+            } catch (err) {
+                document.getElementById('error').textContent = 'Registration failed. Please try again.';
+                document.getElementById('error').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
