@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "Blood Donation Management System",
   "scripts": {
-    "frontend": "cd frontend && npm run dev",
+    "start": "concurrently \"cd backend && npm start\" \"cd frontend && npm run dev\"",
+    "dev": "concurrently \"cd backend && npm run dev\" \"cd frontend && npm run dev\"",
     "backend": "cd backend && npm start",
-    "dev": "npm run backend",
-    "install-all": "cd frontend && npm install && cd ../backend && npm install"
+    "frontend": "cd frontend && npm run dev",
+    "install-all": "npm install && cd frontend && npm install && cd ../backend && npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

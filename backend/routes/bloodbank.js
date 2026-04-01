@@ -4,24 +4,17 @@ const { BloodBank, User } = require('../models');
 
 const router = express.Router();
 
-const requireBloodBankAuth = (req, res, next) => {
-  if (!req.session.bloodBankId) return res.status(401).json({ error: 'Unauthorized' });
-  next();
-};
+const requireBloodBankAuth = (req, res, next) =>
+  req.session.bloodBankId ? next() : res.status(401).json({ error: 'Unauthorized' });
 
 router.post('/register', async (req, res) => {
   try {
-    console.log('🏥 Blood bank registration:', req.body.email);
     const existing = await BloodBank.findOne({ $or: [{ email: req.body.email }, { license_number: req.body.license_number }] });
     if (existing) return res.status(400).json({ error: 'Blood bank already registered' });
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-    const bloodBank = await BloodBank.create({ ...req.body, password: hashedPassword });
-    
-    console.log('✅ Blood bank registered:', bloodBank._id);
+    const bloodBank = await BloodBank.create({ ...req.body, password: await bcrypt.hash(req.body.password, 10) });
     res.json({ success: true, bloodBankId: bloodBank._id });
   } catch (err) {
-    console.error('❌ Blood bank registration error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
@@ -29,38 +22,27 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const bloodBank = await BloodBank.findOne({ email: req.body.email });
-    if (!bloodBank || !await bcrypt.compare(req.body.password, bloodBank.password)) {
+    if (!bloodBank || !await bcrypt.compare(req.body.password, bloodBank.password))
       return res.status(401).json({ error: 'Invalid credentials' });
-    }
 
     req.session.bloodBankId = bloodBank._id.toString();
     req.session.bloodBankName = bloodBank.name;
-    
     res.json({ success: true, bloodBank: { name: bloodBank.name } });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-router.post('/logout', (req, res) => {
-  req.session.destroy();
-  res.json({ success: true });
-});
-
-router.get('/check-auth', (req, res) => {
-  res.json({ authenticated: !!req.session.bloodBankId, bloodBank: req.session.bloodBankName });
-});
+router.post('/logout', (req, res) => { req.session.destroy(); res.json({ success: true }); });
+router.get('/check-auth', (req, res) => res.json({ authenticated: !!req.session.bloodBankId, bloodBank: req.session.bloodBankName }));
 
 router.post('/donors', requireBloodBankAuth, async (req, res) => {
   try {
-    const donors = req.body.donors;
-    const hashedPassword = await bcrypt.hash('bloodbank123', 10);
-    
-    const createdDonors = await User.insertMany(
-      donors.map(d => ({ ...d, password: hashedPassword, blood_bank_id: req.session.bloodBankId }))
+    const password = await bcrypt.hash('bloodbank123', 10);
+    const created = await User.insertMany(
+      req.body.donors.map(d => ({ ...d, password, blood_bank_id: req.session.bloodBankId }))
     );
-    
-    res.json({ success: true, count: createdDonors.length });
+    res.json({ success: true, count: created.length });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -68,8 +50,7 @@ router.post('/donors', requireBloodBankAuth, async (req, res) => {
 
 router.get('/donors', requireBloodBankAuth, async (req, res) => {
   try {
-    const donors = await User.find({ blood_bank_id: req.session.bloodBankId });
-    res.json(donors);
+    res.json(await User.find({ blood_bank_id: req.session.bloodBankId }));
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

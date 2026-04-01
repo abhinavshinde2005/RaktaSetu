@@ -312,8 +312,15 @@
 
             console.log('🔍 Searching donors...');
             try {
-                const res = await fetch(API_URL + `/api/donors?${params}`, { credentials: 'include' });
-                const donors = await res.json();
+                const [donorsRes, sentRes] = await Promise.all([
+                    fetch(API_URL + `/api/donors?${params}`, { credentials: 'include' }),
+                    fetch(API_URL + '/api/requests/sent', { credentials: 'include' })
+                ]);
+                const donors = await donorsRes.json();
+                const sentRequests = await sentRes.json();
+                const requestedDonorIds = new Set(
+                    sentRequests.filter(r => ['pending', 'accepted'].includes(r.status)).map(r => r.donor_id)
+                );
                 console.log(`📥 Found ${donors.length} donors`);
 
                 document.getElementById('resultCount').textContent = donors.length;
@@ -350,9 +357,10 @@
                                 <button onclick="sendSMS('${donor.phone}', '${donor.name}', '${donor.blood_type}')" class="flex-1 bg-blue-600 text-white font-semibold py-2 rounded-lg hover:bg-blue-700 transition flex items-center justify-center gap-2">
                                     <span>💬</span> SMS
                                 </button>
-                                <button onclick="openRequestModal('${donor._id}', '${donor.name}', '${donor.blood_type}')" class="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">
-                                    Request
-                                </button>
+                                ${requestedDonorIds.has(donor._id)
+                                    ? `<button disabled class="flex-1 bg-gray-400 text-white font-semibold py-2 rounded-lg cursor-not-allowed">✅ Requested</button>`
+                                    : `<button onclick="openRequestModal('${donor._id}', '${donor.name}', '${donor.blood_type}')" class="flex-1 bg-red-600 text-white font-semibold py-2 rounded-lg hover:bg-red-700 transition">Request</button>`
+                                }
                             </div>
                         </div>
                     `).join('');
@@ -400,12 +408,12 @@
                     body: JSON.stringify(data)
                 });
 
+                const result = await res.json();
                 if (res.ok) {
                     showToast('Blood request sent successfully!');
                     closeRequestModal();
                     e.target.reset();
                 } else {
-                    const result = await res.json();
                     showToast(result.error || 'Failed to send request', 'error');
                 }
             } catch (err) {
